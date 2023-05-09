@@ -1,2 +1,2 @@
 # relish
-Relishiq Developer Technical Test
+Relishiq Developer Technical Test - Daniel Juarez
