@@ -69,4 +69,55 @@ const getInfobyId = async (req, res) => {
 
 }
 
-module.exports = { getInfobyId }
+const getInfobyFilter = async (req, res) => {
+    const title = req.query['title']
+    const album_title = req.query['album.title']
+    const user_email = req.query['album.user.email']
+    
+    let photos = await getPhoto()
+    let albums = await getAlbum()
+    let users = await getUser()
+
+    if (user_email && user_email.trim().length > 0) {
+        users = users.filter((user) =>
+            user.email == user_email
+        )
+    }
+
+    albums = albums.filter((album) => {
+        return users.some(f => {
+            return f.id === album.userId && (album_title && album_title.trim().length > 0 ? album.title.includes(album_title.toLowerCase()) : true)
+        })
+    })
+
+    photos = photos.filter((photo) => {
+        return albums.some(f => {
+            return f.id === photo.albumId && (title && title.trim().length > 0 ? photo.title.includes(title.toLowerCase()) : true)
+        })
+    })
+
+    let total = photos.length
+    
+
+    res.status(200).send({ items: await format(photos, albums, users), total: total })
+}
+
+const format = async (photos, albums, users) => {
+    return await photos.map((photo) => {
+        photo.album = albums.filter(e => e.id === photo.albumId).map((album) => {
+            album.user = users.filter(u => u.id === album.userId)[0]
+
+            return {
+                ...album
+            }
+        })[0]
+        delete photo.albumId
+        delete photo.album.userId
+        return {
+            ...photo
+        }
+    })
+
+}
+
+module.exports = { getInfobyId, getInfobyFilter }
