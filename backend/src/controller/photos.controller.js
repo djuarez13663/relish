@@ -51,7 +51,7 @@ const getInfobyId = async (req, res) => {
         res.status(400).send({ status: 'FAILED', data: { error: 'Parameter :id can not be empty' } })
     }
 
-    try{
+    try {
         const photoItem = await getPhoto(id)
         const albumItem = await getAlbum(photoItem.albumId)
         const userItem = await getUser(albumItem.userId)
@@ -73,33 +73,41 @@ const getInfobyFilter = async (req, res) => {
     const title = req.query['title']
     const album_title = req.query['album.title']
     const user_email = req.query['album.user.email']
-    
+    const limit = req.query['limit'] ? req.query['limit'] : 25
+    const offset = req.query['offset'] ? req.query['offset'] : 0
+
     let photos = await getPhoto()
     let albums = await getAlbum()
     let users = await getUser()
 
-    if (user_email && user_email.trim().length > 0) {
-        users = users.filter((user) =>
-            user.email == user_email
-        )
+    try {
+
+        if (user_email && user_email.trim().length > 0) {
+            users = users.filter((user) =>
+                user.email == user_email
+            )
+        }
+
+        albums = albums.filter((album) => {
+            return users.some(f => {
+                return f.id === album.userId && (album_title && album_title.trim().length > 0 ? album.title.includes(album_title.toLowerCase()) : true)
+            })
+        })
+
+        photos = photos.filter((photo) => {
+            return albums.some(f => {
+                return f.id === photo.albumId && (title && title.trim().length > 0 ? photo.title.includes(title.toLowerCase()) : true)
+            })
+        })
+
+        let total = photos.length
+        let end = Number(offset) + Number(limit)
+        photos = photos.slice(offset, end)
+
+        res.status(200).send({ items: await format(photos, albums, users), total: total })
+    } catch (e) {
+        res.status(e?.status || 400).send({ status: "FAILED", data: { error: e?.message || e } })
     }
-
-    albums = albums.filter((album) => {
-        return users.some(f => {
-            return f.id === album.userId && (album_title && album_title.trim().length > 0 ? album.title.includes(album_title.toLowerCase()) : true)
-        })
-    })
-
-    photos = photos.filter((photo) => {
-        return albums.some(f => {
-            return f.id === photo.albumId && (title && title.trim().length > 0 ? photo.title.includes(title.toLowerCase()) : true)
-        })
-    })
-
-    let total = photos.length
-    
-
-    res.status(200).send({ items: await format(photos, albums, users), total: total })
 }
 
 const format = async (photos, albums, users) => {
