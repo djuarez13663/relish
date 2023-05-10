@@ -1,11 +1,19 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:397969568879:task-definition/task-def-relish:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:397969568879:task-definition/relish:1",
     "containerDefinitions": [
         {
             "name": "my-container",
             "image": "397969568879.dkr.ecr.us-east-1.amazonaws.com/daniel-juarez",
-            "cpu": 0,
+            "cpu": 1024,
+            "memory": 3072,
             "portMappings": [
+                {
+                    "name": "my-container-80-tcp",
+                    "containerPort": 80,
+                    "hostPort": 80,
+                    "protocol": "tcp",
+                    "appProtocol": "http"
+                },
                 {
                     "name": "my-container-3000-tcp",
                     "containerPort": 3000,
@@ -27,18 +35,16 @@
             "mountPoints": [],
             "volumesFrom": [],
             "ulimits": [],
-            "logConfiguration": {
-                "logDriver": "awslogs",
-                "options": {
-                    "awslogs-group": "/ecs/task-def-relish",
-                    "awslogs-create-group": "true",
-                    "awslogs-region": "us-east-1",
-                    "awslogs-stream-prefix": "ecs"
+            "resourceRequirements": [
+                {
+                    "value": "1",
+                    "type": "GPU"
                 }
-            }
+            ]
         }
     ],
-    "family": "task-def-relish",
+    "family": "relish",
+    "taskRoleArn": "arn:aws:iam::397969568879:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::397969568879:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
     "revision": 1,
@@ -46,16 +52,10 @@
     "status": "ACTIVE",
     "requiresAttributes": [
         {
-            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
-        },
-        {
-            "name": "ecs.capability.execution-role-awslogs"
-        },
-        {
             "name": "com.amazonaws.ecs.capability.ecr-auth"
         },
         {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
+            "name": "com.amazonaws.ecs.capability.task-iam-role"
         },
         {
             "name": "ecs.capability.execution-role-ecr-pull"
@@ -65,19 +65,14 @@
         },
         {
             "name": "ecs.capability.task-eni"
-        },
-        {
-            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
     ],
     "placementConstraints": [],
     "compatibilities": [
-        "EC2",
-        "FARGATE"
+        "EC2"
     ],
     "requiresCompatibilities": [
-        "EC2",
-        "FARGATE"
+        "EC2"
     ],
     "cpu": "1024",
     "memory": "3072",
@@ -85,7 +80,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2023-05-10T04:22:08.190Z",
+    "registeredAt": "2023-05-10T06:36:40.164Z",
     "registeredBy": "arn:aws:iam::397969568879:root",
     "tags": []
 }
