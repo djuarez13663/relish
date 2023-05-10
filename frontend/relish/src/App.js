@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import './App.css';
 import Metaphoto from './features/Metaphoto/Metaphoto';
 import { Provider } from 'react-redux';

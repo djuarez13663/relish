@@ -1,4 +1,4 @@
-import { Container, ImageList, ImageListItem, ListSubheader, ImageListItemBar, IconButton } from "@mui/material";
+import { Container, ImageList, ImageListItem, ImageListItemBar, IconButton } from "@mui/material";
 import React from "react";
 import Filters from "../../components/Filters/Filters";
 import { useSelector } from "react-redux";

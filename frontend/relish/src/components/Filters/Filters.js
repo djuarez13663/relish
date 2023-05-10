@@ -48,14 +48,17 @@ const Filters = () => {
     }
 
     useEffect(() => {
-        if(photoId || title || albumtitle || email){
-            handleSearch()
+        function reload() {
+            if (photoId || title || albumtitle || email) {
+                handleSearch()
+            }
         }
-    }, [page])
+        reload()
+    }, [page])// eslint-disable-line react-hooks/exhaustive-deps
 
     useEffect(() => {
         dispatch(updateList([], 0))
-    }, [filters])
+    }, [filters])// eslint-disable-line react-hooks/exhaustive-deps
 
     return (
         <>
@@ -91,13 +94,13 @@ const Filters = () => {
                     {
                         total > 1 &&
                         <TablePagination
-                        component='div'
-                        page={page}
-                        rowsPerPage={rowsPerPage}
-                        count={total}
-                        onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0) }}
-                        onPageChange={(e, newPage) => setPage(newPage)}
-                    />
+                            component='div'
+                            page={page}
+                            rowsPerPage={rowsPerPage}
+                            count={total}
+                            onRowsPerPageChange={(e) => { setRowsPerPage(parseInt(e.target.value, 10)); setPage(0) }}
+                            onPageChange={(e, newPage) => setPage(newPage)}
+                        />
                     }
                 </Grid>
             </Grid>
