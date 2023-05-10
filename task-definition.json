@@ -1,5 +1,5 @@
 {
-    "taskDefinitionArn": "arn:aws:ecs:us-east-1:397969568879:task-definition/relish:1",
+    "taskDefinitionArn": "arn:aws:ecs:us-east-1:397969568879:task-definition/continuos-app:1",
     "containerDefinitions": [
         {
             "name": "my-container",
@@ -15,16 +15,16 @@
                     "appProtocol": "http"
                 },
                 {
-                    "name": "my-container-3000-tcp",
-                    "containerPort": 3000,
-                    "hostPort": 3000,
+                    "name": "my-container-4000-tcp",
+                    "containerPort": 4000,
+                    "hostPort": 4000,
                     "protocol": "tcp",
                     "appProtocol": "http"
                 },
                 {
-                    "name": "my-container-4000-tcp",
-                    "containerPort": 4000,
-                    "hostPort": 4000,
+                    "name": "my-container-3000-tcp",
+                    "containerPort": 3000,
+                    "hostPort": 3000,
                     "protocol": "tcp",
                     "appProtocol": "http"
                 }
@@ -35,15 +35,18 @@
             "mountPoints": [],
             "volumesFrom": [],
             "ulimits": [],
-            "resourceRequirements": [
-                {
-                    "value": "1",
-                    "type": "GPU"
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": "/ecs/continuos-app",
+                    "awslogs-create-group": "true",
+                    "awslogs-region": "us-east-1",
+                    "awslogs-stream-prefix": "ecs"
                 }
-            ]
+            }
         }
     ],
-    "family": "relish",
+    "family": "continuos-app",
     "taskRoleArn": "arn:aws:iam::397969568879:role/ecsTaskExecutionRole",
     "executionRoleArn": "arn:aws:iam::397969568879:role/ecsTaskExecutionRole",
     "networkMode": "awsvpc",
@@ -52,7 +55,16 @@
     "status": "ACTIVE",
     "requiresAttributes": [
         {
+            "name": "com.amazonaws.ecs.capability.logging-driver.awslogs"
+        },
+        {
+            "name": "ecs.capability.execution-role-awslogs"
+        },
+        {
             "name": "com.amazonaws.ecs.capability.ecr-auth"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.19"
         },
         {
             "name": "com.amazonaws.ecs.capability.task-iam-role"
@@ -65,14 +77,19 @@
         },
         {
             "name": "ecs.capability.task-eni"
+        },
+        {
+            "name": "com.amazonaws.ecs.capability.docker-remote-api.1.29"
         }
     ],
     "placementConstraints": [],
     "compatibilities": [
-        "EC2"
+        "EC2",
+        "FARGATE"
     ],
     "requiresCompatibilities": [
-        "EC2"
+        "EC2",
+        "FARGATE"
     ],
     "cpu": "1024",
     "memory": "3072",
@@ -80,7 +97,7 @@
         "cpuArchitecture": "X86_64",
         "operatingSystemFamily": "LINUX"
     },
-    "registeredAt": "2023-05-10T06:36:40.164Z",
+    "registeredAt": "2023-05-10T07:09:02.698Z",
     "registeredBy": "arn:aws:iam::397969568879:root",
     "tags": []
 }
